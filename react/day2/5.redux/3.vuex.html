@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div id="demo"></div>
+    <script type="text/javascript" src="../js/vue.js"></script>
+    <script type="text/javascript" src="../js/vuex.js"></script>
+    <!-- <script type="text/javascript" src="../js/redux.js"></script> -->
+    <script type="text/javascript">
+      Vue.component("xheader",{
+        data:function(){
+          return {
+            name:"qd"
+          }
+        },
+        template:`
+          <div>
+            <input v-model="name" />
+            <p>{{name}}</p>
+            <header>头部</header>
+          </div>
+        `,
+        watch:{  //监听name的变化
+          name:function(){
+            this.$store.dispatch("SETNAMEACTION",this.name) //触发action里的方法
+            console.log(this.name);
+          }
+        }
+      })
+      Vue.component("xfooter",{
+        template:`
+          <div style="border: 1px solid red">
+            <p>{{name}}</p>
+            <footer>底部</footer>
+          </div>
+        `,
+        //取值
+        computed:{
+          name:function(){
+            console.log("GETNAME")
+            return this.$store.getters.GETNAME
+          }
+        }
+      })
+      var store = new Vuex.Store({
+        state:{
+          name:"gz"
+        },
+        mutations: {
+          SETNAME (state,data) {
+            state.name = data
+          }
+        },
+        actions: { //触发mutation里的方法
+          SETNAMEACTION:function(context,data){
+            console.log("SETNAMEACTION");
+            context.commit("SETNAME",data)
+          }
+        },
+        getters: { //拿数据
+          GETNAME: function(state){
+            console.log("GETNAME")
+            return state.name
+          }
+        }
+      })
+      new Vue({
+        store:store,
+        el:"#demo",
+        template:`
+          <div style="border: 1px solid green">
+            <xheader></xheader>
+            <xfooter></xfooter>
+          </div>
+        `
+      })
+    </script>
+  </body>
+</html>
